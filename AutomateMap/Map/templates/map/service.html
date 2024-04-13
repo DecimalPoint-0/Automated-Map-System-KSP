@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUTOMATED MAPPING SYSTEM</title>
+    {% load static %}
+    <link href="{% static 'map/fontawesome/css/all.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'map/style.css' %}">
+    
+</head>
+
+<body>
+    <nav class="nav-bar flex-items">
+        <div id="logo" class="flex-items">
+            <img src="{% static '/map/logo.png' %}" alt="">
+            <h3> CodeGraphics</h3>
+        </div>
+        <h1 style="color: white;">AUTOMATED MAPPING SYSTEM</h1>
+        <ul class="flex-items">
+            <li><i class="fas fa-house"></i><a href="{% url 'map:index' %}"> Home</a></li>
+            <li><a href=""><i class="fas fa-services"></i> Service</a></li>
+            <li><i class="fas fa-phone"></i><a href=""> Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="container content-container">
+        <div class="places-container">
+            <h1 style="margin-bottom: 2rem; text-align: justify;">About The Mapping System</h1>
+            <p style="line-height: 1.5;">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illo molestiae animi provident rerum pariatur. Amet atque dolore eveniet harum iste porro aliquid ipsa repudiandae, suscipit reiciendis? Eveniet, odio soluta tenetur minima dolor hic illo, earum commodi error distinctio iure nesciunt.</p><br>
+
+            <p style="line-height: 1.5; text-align: justify;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit fugiat delectus expedita, quod id ullam voluptatem amet consequatur ab vel consectetur inventore similique quasi, minus beatae voluptates enim cum? Ab?</p>
+        </div>
+
+        <div class="image-container">
+            <div class="rotate" style="height: 25rem; width: 25rem; margin: auto; background: none;">
+                <img src="{% static '/map/world.png' %}" alt="">
+            </div>
+        </div>
+        
+    </section>
+
+<footer>
+
+</footer>
+<script type="text/javascript">
+  function initMap() {
+  // Your location
+  const a = document.getElementById("lat").textContent;
+  
+  const b = document.getElementById("long").textContent;
+
+  const loc = { lat: parseFloat(a) , lng: parseFloat(b) };
+  var directionsService = new google.maps.DirectionsService();
+  var directionsRenderer = new google.maps.DirectionsRenderer();
+  // var chicago = new google.maps.LatLng(7.843084727563055, 6.7417879997547505);
+  // Centered map on location
+  const map = new google.maps.Map(document.querySelector('.map'), {
+    zoom: 16,
+    center: loc,
+    bearing: 180,
+    mapTypeId: 'hybrid'
+  });
+  map.setTilt(45);
+  function calcRoute() {
+    var start = document.getElementById('start').value;
+    var end = document.getElementById('end').value;
+    var request = {
+      origin: { lat: 7.843084727563055, lng: 6.7417879997547505 },
+      destination: { lat: parseFloat(a), lng: parseFloat(b) },
+      travelMode: 'WALKING'
+    };
+    directionsService.route(request, function(result, status) {
+      if (status == 'OK') {
+        directionsRenderer.setDirections(result);
+      }
+    });
+  }
+  // The marker, positioned at location
+  new google.maps.Marker({
+    position: loc,
+    map,
+    title: document.querySelector('#name').textContent,
+  });
+  const trafficLayer = new google.maps.TrafficLayer();
+  trafficLayer.setMap(map);
+
+}
+
+// Sticky menu background
+window.addEventListener('scroll', function() {
+  if (window.scrollY > 150) {
+    document.querySelector('#navbar').style.opacity = 1;
+  } else {
+    document.querySelector('#navbar').style.opacity = 1;
+  }
+});
+
+// Smooth Scrolling
+$('#navbar a, .btn').on('click', function(event) {
+  if (this.hash !== '') {
+    event.preventDefault();
+
+    const hash = this.hash;
+
+    $('html, body').animate(
+      {
+        scrollTop: $(hash).offset().top - 100
+      },
+      800
+    );
+  }
+});
+
+</script>
+<script src="https://maps.googleapis.com/maps/api/directions/json?origin=Disneyland&destination=Universal+Studios+Hollywood&key=AIzaSyD0zduLkJPxQV89TYT4all1xeC3ifo2GKg"></script>
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0zduLkJPxQV89TYT4all1xeC3ifo2GKg&callback=initMap">
+</script>
+
+</body>
+
+</html>

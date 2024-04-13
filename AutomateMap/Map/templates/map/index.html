@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUTOMATED MAPPING SYSTEM</title>
+    {% load static %}
+    <link href="{% static 'map/fontawesome/css/all.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'map/style.css' %}">
+
+</head>
+
+<body>
+    <nav class="nav-bar flex-items">
+        <div id="logo" class="flex-items">
+            <img src="{% static '/map/logo.png' %}" alt="">
+            <h3> CodeGraphics</h3>
+        </div>
+        <h1 style="color: white;">AUTOMATED MAPPING SYSTEM</h1>
+        <ul class="flex-items">
+            <li><i class="fas fa-house"></i><a href=""> Home</a></li>
+            <li><a href="{% url 'map:service' %}"><i class="fas fa-services"></i> Service</a></li>
+            <li><i class="fas fa-phone"></i><a href=""> Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="container content-container">
+        <div class="places-container">
+            <form action="{% url 'map:index' %}" method="POST" id='mapForm'>
+               
+                <h3> Select a place to View on Map</h3>
+                {% csrf_token %}
+                <select name="place" id="place">
+                    {% for place in places %}
+                    <option value="{{place.id}}"> {{ place.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit"> View in Map</button>
+                <div class="details">
+
+                    <h4 id="lat"><i style="color: black;"class="fas fa-globe fa-beat"></i> {{ s_place.latitude }}</h4>
+                    <h4 id="long"><i style="color: red;"class="fas fa-globe fa-beat"></i> {{ s_place.longitude }}</h4>
+
+                    <h4 id="town"><i style="color: blue;"class="fas fa-city fa-beat"></i> {{ s_place.town }} </h4>
+                    <h4 id="name"><i style="color: green;"class="fas fa-flag fa-beat"></i> {{ s_place.name }}</h4>
+                    <p id="description">
+                        {{ s_place.description }}
+                    </p>
+                    <!-- 7.840987799415288, 6.740801999741869 -->
+                </div>
+                
+            </form>
+        </div>
+
+        <div class="image-container">
+            <div class="img-wrapper" style="height: 16rem; width: 16rem;">
+                <img src="{{ s_place.image1.url }}" alt="">
+            </div>
+            <div class="img" style="height: 16rem; width: 16rem;">
+                <img src="{{ s_place.image2.url }}" alt="">
+            </div>
+        </div>
+
+        
+        <div class="map-container holders"><div class="map">
+
+        </div></div>
+        
+    </section>
+
+<footer>
+
+</footer>
+<script type="text/javascript">
+  function initMap() {
+  // Your location
+  const a = document.getElementById("lat").textContent;
+  
+  const b = document.getElementById("long").textContent;
+
+  const loc = { lat: parseFloat(a) , lng: parseFloat(b) };
+  var directionsService = new google.maps.DirectionsService();
+  var directionsRenderer = new google.maps.DirectionsRenderer();
+  // var chicago = new google.maps.LatLng(7.843084727563055, 6.7417879997547505);
+  // Centered map on location
+  const map = new google.maps.Map(document.querySelector('.map'), {
+    zoom: 16,
+    center: loc,
+    bearing: 180,
+    mapTypeId: 'hybrid'
+  });
+  map.setTilt(45);
+  function calcRoute() {
+    var start = document.getElementById('start').value;
+    var end = document.getElementById('end').value;
+    var request = {
+      origin: { lat: 7.843084727563055, lng: 6.7417879997547505 },
+      destination: { lat: parseFloat(a), lng: parseFloat(b) },
+      travelMode: 'WALKING'
+    };
+    directionsService.route(request, function(result, status) {
+      if (status == 'OK') {
+        directionsRenderer.setDirections(result);
+      }
+    });
+  }
+  // The marker, positioned at location
+  new google.maps.Marker({
+    position: loc,
+    map,
+    title: document.querySelector('#name').textContent,
+  });
+  const trafficLayer = new google.maps.TrafficLayer();
+  trafficLayer.setMap(map);
+
+}
+
+// Sticky menu background
+window.addEventListener('scroll', function() {
+  if (window.scrollY > 150) {
+    document.querySelector('#navbar').style.opacity = 1;
+  } else {
+    document.querySelector('#navbar').style.opacity = 1;
+  }
+});
+
+// Smooth Scrolling
+$('#navbar a, .btn').on('click', function(event) {
+  if (this.hash !== '') {
+    event.preventDefault();
+
+    const hash = this.hash;
+
+    $('html, body').animate(
+      {
+        scrollTop: $(hash).offset().top - 100
+      },
+      800
+    );
+  }
+});
+
+</script>
+<script src="https://maps.googleapis.com/maps/api/directions/json?origin=Disneyland&destination=Universal+Studios+Hollywood&key=AIzaSyD0zduLkJPxQV89TYT4all1xeC3ifo2GKg"></script>
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0zduLkJPxQV89TYT4all1xeC3ifo2GKg&callback=initMap">
+</script>
+
+</body>
+
+</html>
